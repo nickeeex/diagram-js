@@ -3,15 +3,25 @@ import {
   inject
 } from 'test/TestHelper';
 
-import moveCanvasModule from 'lib/navigation/movecanvas';
 import interactionEventsModule from 'lib/features/interaction-events';
+import moveCanvasModule from 'lib/navigation/movecanvas';
 
 
 describe('navigation/movecanvas', function() {
 
+  var defaultDiagramConfig = {
+    modules: [
+      interactionEventsModule,
+      moveCanvasModule
+    ],
+    canvas: {
+      deferUpdate: false
+    }
+  };
+
   describe('bootstrap', function() {
 
-    beforeEach(bootstrapDiagram({ modules: [ moveCanvasModule ] }));
+    beforeEach(bootstrapDiagram(defaultDiagramConfig));
 
 
     it('should bootstrap', inject(function(moveCanvas, canvas) {
@@ -32,10 +42,10 @@ describe('navigation/movecanvas', function() {
 
   describe('integration', function() {
 
-    beforeEach(bootstrapDiagram({ modules: [ moveCanvasModule, interactionEventsModule ] }));
+    beforeEach(bootstrapDiagram(defaultDiagramConfig));
 
 
-    it('should silence click', inject(function(eventBus, moveCanvas, canvas) {
+    it('should silence click', inject(function(eventBus, canvas) {
 
       canvas.addShape({
         id: 'test',
@@ -47,8 +57,8 @@ describe('navigation/movecanvas', function() {
 
       // click should not be triggered on
       // canvas drag
-      eventBus.on('element.click', function(e) {
-        console.error('click', e);
+      eventBus.on('element.click', function(error) {
+        expect(error).to.not.exist;
       });
     }));
 
